@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import UniqueConstraint
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
@@ -26,12 +27,13 @@ class User(db.Model):
         self.DateSignedUp = DateSignedUp
 
 class User_Countries(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
     Userid = db.Column(db.Integer)
     Countryid = db.Column(db.Integer)
     DateStart = db.Column(db.DateTime)
     Active = db.Column(db.Boolean)
 
-    def __init__(Userid, Countryid, DateStart, Active):
+    def __init__(self, Userid, Countryid, DateStart, Active):
         self.Userid = Userid
         self.Countryid = Countryid
         self.DateStart = DateStart
@@ -45,6 +47,7 @@ class Racecourses(db.Model):
         self.Name = Name
 
 class Selections(db.Model): 
+    ID = db.Column(db.Integer, primary_key=True)
     Userid = db.Column(db.Integer)
     Racecourseid = db.Column(db.Integer)
     RaceDate = db.Column(db.DateTime)
@@ -53,7 +56,7 @@ class Selections(db.Model):
     __table_args__ = (UniqueConstraint('Userid', 'Racecourseid', 'RaceDate', 'RaceNumber', 'HorseNumber'),
                      )
 
-    def __init__(Userid, Racecourseid, RaceDate, RaceNumber, HorseNumber):
+    def __init__(self, Userid, Racecourseid, RaceDate, RaceNumber, HorseNumber):
         self.Userid = Userid
         self.Racecourseid = Racecourseid
         self.RaceDate = RaceDate
