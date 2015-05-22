@@ -7,19 +7,12 @@ app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
 db = SQLAlchemy(app)
 
-class Todo(db.Model):
-    __tablename__ = 'todos'
-    id = db.Column('todo_id', db.Integer, primary_key=True)
-    title = db.Column(db.String(60))
-    text = db.Column(db.String)
-    done = db.Column(db.Boolean)
-    pub_date = db.Column(db.DateTime)
+class Country(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(60))
 
-    def __init__(self, title, text):
-        self.title = title
-        self.text = text
-        self.done = False
-        self.pub_date = datetime.utcnow()
+    def __init__(self, Name):
+        self.Name = Name
 
 class User(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
