@@ -2,11 +2,13 @@ from datetime import datetime
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask.ext.babel import Babel, gettext
 from sqlalchemy import UniqueConstraint
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
 db = SQLAlchemy(app)
+babel = Babel(app)
 
 class Country(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
@@ -74,6 +76,10 @@ def login():
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
 if __name__ == '__main__':
     app.run()
