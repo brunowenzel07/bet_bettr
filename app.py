@@ -26,7 +26,7 @@ class User(db.Model):
     Email = db.Column(db.String(120))
     Password = db.Column(db.String(120))
     Name = db.Column(db.String(60))
-    DateSignedUp = db.Column(db.DateTime)
+    DateSignedUp = db.Column(db.TIMESTAMP())
 
     def __init__(self, Email, Password, Name, DateSignedUp):
         self.Email = Email
@@ -38,7 +38,7 @@ class User_Countries(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
     Userid = db.Column(db.Integer)
     Countryid = db.Column(db.Integer)
-    DateStart = db.Column(db.DateTime)
+    DateStart = db.Column(db.TIMESTAMP())
     Active = db.Column(db.Boolean)
 
     def __init__(self, Userid, Countryid, DateStart, Active):
@@ -58,7 +58,7 @@ class Selections(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
     Userid = db.Column(db.Integer)
     Racecourseid = db.Column(db.Integer)
-    RaceDate = db.Column(db.DateTime)
+    RaceDate = db.Column(db.TIMESTAMP())
     RaceNumber = db.Column(db.Integer)
     HorseNumber = db.Column(db.Integer)
     __table_args__ = (UniqueConstraint('Userid', 'Racecourseid', 'RaceDate', 'RaceNumber', 'HorseNumber'),
@@ -103,6 +103,23 @@ def signup():
         except:
             return render_template('signup.html', message=gettext('Error, please try again!'))
     return render_template('signup.html', message='')
+
+@app.route('/confirmemail')
+def confirm_email():
+    try:
+        email = request.args.get('email')
+        code = request.args.get('code')
+
+        #get the user
+        user = User.query.filter_by(Email=email).first()
+
+        #check does the hash match
+        if code == hashlib.md5(user.Email+user.Name).hexdigest():
+            user.DateSignedUp = datetime.today()
+            db.session.commit()
+            return render_template('login.html', message=gettext('Success, your email is confirmed, please login below!'))
+    except:
+        return render_template('login.html', message=gettext('Error, please contact support!'))
 
 @babel.localeselector
 def get_locale():
