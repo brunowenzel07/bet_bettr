@@ -1,6 +1,8 @@
 from datetime import datetime
+import hashlib
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort
+from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
 from sqlalchemy import UniqueConstraint
@@ -10,6 +12,7 @@ app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
 db = SQLAlchemy(app)
 babel = Babel(app)
+mail = Mail(app)
 
 class Country(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
@@ -86,6 +89,15 @@ def signup():
             newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01))
             db.session.add(newUser)
             db.session.commit()
+
+            #generate confirmation link, code:email+hash of email+name
+            confirmation_link = app.config['DOMAIN'] + 'confirmemail?email='+request.form['inputEmail']+'&code='+hashlib.md5(request.form['inputEmail']+request.form['inputName']).hexdigest()
+
+            #send email
+            msg = Message("Welcome to better app", sender=app.config['DEFAULT_MAIL_SENDER'])
+            msg.add_recipient(request.form['inputEmail'])
+            msg.body = 'Welcome to the app! Please go to this address to confirm your email: {0}'.format(confirmation_link)
+            mail.send(msg)
 
             return render_template('signup.html', message=gettext('Signed up, please check email for confirmation link!'))
         except:
