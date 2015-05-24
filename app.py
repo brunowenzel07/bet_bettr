@@ -20,11 +20,13 @@ class Country(db.Model):
 class User(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
     Email = db.Column(db.String(120))
+    Password = db.Column(db.String(120))
     Name = db.Column(db.String(60))
     DateSignedUp = db.Column(db.DateTime)
 
-    def __init__(self, Email, Name, DateSignedUp):
+    def __init__(self, Email, Password,Name, DateSignedUp):
         self.Email = Email
+        self.Password = Password
         self.Name = Name
         self.DateSignedUp = DateSignedUp
 
