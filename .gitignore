@@ -23,6 +23,7 @@ pip-log.txt
 
 # Dev
 *.sublime*
+app.sql
 
 # Ins
 gist.txt
