@@ -4,6 +4,7 @@ from flask import Flask, request, flash, url_for, redirect, \
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
 from sqlalchemy import UniqueConstraint
+from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
@@ -24,7 +25,7 @@ class User(db.Model):
     Name = db.Column(db.String(60))
     DateSignedUp = db.Column(db.DateTime)
 
-    def __init__(self, Email, Password,Name, DateSignedUp):
+    def __init__(self, Email, Password, Name, DateSignedUp):
         self.Email = Email
         self.Password = Password
         self.Name = Name
@@ -67,6 +68,8 @@ class Selections(db.Model):
         self.RaceNumber = RaceNumber
         self.HorseNumber = HorseNumber
 
+db.create_all()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -75,9 +78,19 @@ def index():
 def login():
     return render_template('login.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html')
+    if request.method == 'POST':
+        # try:
+        #add the user to database
+        newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01))
+        db.session.add(newUser)
+        db.session.commit()
+
+        return render_template('signup.html', message=gettext('Signed up, please check email for confirmation link!'))
+        # except:
+        #     return render_template('signup.html', message=gettext('Error, please try again!'))
+    return render_template('signup.html', message='')
 
 @babel.localeselector
 def get_locale():
