@@ -81,15 +81,15 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        # try:
-        #add the user to database
-        newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01))
-        db.session.add(newUser)
-        db.session.commit()
+        try:
+            #add the user to database
+            newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01))
+            db.session.add(newUser)
+            db.session.commit()
 
-        return render_template('signup.html', message=gettext('Signed up, please check email for confirmation link!'))
-        # except:
-        #     return render_template('signup.html', message=gettext('Error, please try again!'))
+            return render_template('signup.html', message=gettext('Signed up, please check email for confirmation link!'))
+        except:
+            return render_template('signup.html', message=gettext('Error, please try again!'))
     return render_template('signup.html', message='')
 
 @babel.localeselector
