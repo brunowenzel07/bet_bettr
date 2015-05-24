@@ -1,7 +1,7 @@
 from datetime import datetime
 import hashlib
 from flask import Flask, request, flash, url_for, redirect, \
-     render_template, abort
+     render_template, abort, session
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
@@ -75,11 +75,28 @@ db.create_all()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'username' in session:
+        return render_template('dashboard.html')
+    else:
+        return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        try:
+            user = User.query.filter_by(Email=request.form['inputEmail']).first()
+            if check_password_hash(user.Password, request.form['inputPassword']):
+                session['username'] = user.Email
+                return redirect('/')
+            return render_template('login.html', message=gettext('Please try again!'))
+        except:
+             return render_template('login.html', message=gettext('Please try again!'))
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect('/')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
