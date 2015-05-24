@@ -76,7 +76,12 @@ db.create_all()
 @app.route('/')
 def index():
     if 'username' in session:
-        return render_template('dashboard.html')
+        try:
+            user = User.query.filter_by(Email=session['username']).first()
+            return render_template('dashboard.html', user=user)
+        except Exception, e:
+            print str(e)
+            return redirect('/logout')
     else:
         return render_template('index.html')
 
@@ -86,6 +91,9 @@ def login():
         try:
             user = User.query.filter_by(Email=request.form['inputEmail']).first()
             if check_password_hash(user.Password, request.form['inputPassword']):
+                #check if user is active
+                if user.DateSignedUp == datetime(2001,01,01):
+                   return render_template('login.html', message=gettext('Your account is not activated yet, please check your email for activation link!'))
                 session['username'] = user.Email
                 return redirect('/')
             return render_template('login.html', message=gettext('Please try again!'))
@@ -135,7 +143,8 @@ def confirm_email():
             user.DateSignedUp = datetime.today()
             db.session.commit()
             return render_template('login.html', message=gettext('Success, your email is confirmed, please login below!'))
-    except:
+    except Exception, e:
+        print str(e)
         return render_template('login.html', message=gettext('Error, please contact support!'))
 
 @babel.localeselector
