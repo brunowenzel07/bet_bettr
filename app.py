@@ -5,6 +5,7 @@ from flask import Flask, request, flash, url_for, redirect, \
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
+import os
 from sqlalchemy import UniqueConstraint
 from werkzeug import generate_password_hash, check_password_hash
 
