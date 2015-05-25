@@ -72,8 +72,10 @@ class Selections(db.Model):
         self.RaceDate = RaceDate
         self.RaceNumber = RaceNumber
         self.HorseNumber = HorseNumber
-
-db.create_all()
+try:
+    db.create_all()
+except:
+    pass
 
 @app.route('/')
 def index():
