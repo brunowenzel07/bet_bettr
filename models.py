@@ -49,16 +49,30 @@ class Selections(db.Model):
     Racecourseid = db.Column(db.Integer)
     RaceDate = db.Column(db.TIMESTAMP())
     RaceNumber = db.Column(db.Integer)
-    HorseNumber = db.Column(db.Integer)
-    __table_args__ = (UniqueConstraint('Userid', 'Racecourseid', 'RaceDate', 'RaceNumber', 'HorseNumber'),
+    First = db.Column(db.Integer)
+    Second = db.Column(db.Integer)
+    Third = db.Column(db.Integer)
+    Fourth = db.Column(db.Integer)
+    Winodds = db.Column(db.Integer)
+    Favpos = db.Column(db.Integer)
+    Favodds = db.Column(db.Integer)
+    NoRunners = db.Column(db.Integer)
+    __table_args__ = (UniqueConstraint('Userid', 'Racecourseid', 'RaceDate', 'RaceNumber'),
                      )
 
-    def __init__(self, Userid, Racecourseid, RaceDate, RaceNumber, HorseNumber):
+    def __init__(self, Userid, Racecourseid, RaceDate, RaceNumber, First, Second, Third, Fourth, Winodds, Favpos, Favodds, NoRunners):
         self.Userid = Userid
         self.Racecourseid = Racecourseid
         self.RaceDate = RaceDate
         self.RaceNumber = RaceNumber
-        self.HorseNumber = HorseNumber
+        self.First = First
+        self.Second = Second
+        self.Third = Third
+        self.Fourth = Fourth
+        self.Winodds = Winodds
+        self.Favpos = Favpos
+        self.Favodds = Favodds
+        self.NoRunners = NoRunner
 
 class RaceDay(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
