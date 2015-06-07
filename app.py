@@ -16,10 +16,7 @@ db = SQLAlchemy(app)
 babel = Babel(app)
 mail = Mail(app)
 
-try:
-    db.create_all()
-except Exception, e:
-    print str(e)
+db.create_all()
 
 @app.route('/')
 def index():
