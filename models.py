@@ -111,7 +111,7 @@ class Race(db.Model):
     RaceRating = db.Column(db.String(60))
     RaceSurface = db.Column(db.String(60))
     UTCRaceTime = db.Column(db.TIMESTAMP())
-    TrackWidth = db.Column(db.Integer)
+    TrackWidth = db.Column(db.Float)
 
     def __init__(self, RaceDate, RaceCourseCode, RaceName, RaceNumber, RaceType, RaceGoing, RaceRating, RaceSurface, UTCRaceTime, TrackWidth):
         self.RaceDate = RaceDate
