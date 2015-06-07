@@ -99,3 +99,28 @@ class Runner(db.Model):
         self.HorseName = HorseName 
         self.JockeyCode = JockeyCode 
         self.TrainerCode = TrainerCode
+
+class Race(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
+    RaceDate = db.Column(db.TIMESTAMP())
+    RaceCourseCode = db.Column(db.Integer)
+    RaceName = db.Column(db.String(60))
+    RaceNumber = db.Column(db.Integer)
+    RaceType = db.Column(db.String(60))
+    RaceGoing = db.Column(db.String(60))
+    RaceRating = db.Column(db.String(60))
+    RaceSurface = db.Column(db.String(60))
+    UTCRaceTime = db.Column(db.TIMESTAMP())
+    TrackWidth = db.Column(db.Integer)
+
+    def __init__(self, RaceDate, RaceCourseCode, RaceName, RaceNumber, RaceType, RaceGoing, RaceRating, RaceSurface, UTCRaceTime, TrackWidth):
+        self.RaceDate = RaceDate
+        self.RaceCourseCode = RaceCourseCode
+        self.RaceName = RaceName
+        self.RaceNumber = RaceNumber
+        self.RaceType = RaceType
+        self.RaceGoing = RaceGoing
+        self.RaceRating = RaceRating
+        self.RaceSurface = RaceSurface
+        self.UTCRaceTime = UTCRaceTime
+        self.TrackWidth = TrackWidth
