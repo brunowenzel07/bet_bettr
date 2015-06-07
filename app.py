@@ -5,14 +5,14 @@ from flask import Flask, request, flash, url_for, redirect, \
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
-from models import Country, User, User_Countries, Racecourses, Selections
 import os
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #'sqlite:///demo.sql'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
+from models import *
 babel = Babel(app)
 mail = Mail(app)
 

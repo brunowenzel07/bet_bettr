@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
-
-db = SQLAlchemy()
+from app import db
 
 class Country(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
