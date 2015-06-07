@@ -25,6 +25,8 @@ pip-log.txt
 *.sublime*
 app.sql
 *.xlsx
+*.pyc
+*.sql
 
 # Ins
 gist.txt
