@@ -18,8 +18,8 @@ mail = Mail(app)
 
 try:
     db.create_all()
-except:
-    pass
+except Exception, e:
+    print str(e)
 
 @app.route('/')
 def index():
