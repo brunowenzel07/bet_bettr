@@ -71,7 +71,7 @@ class Selections(db.Model):
         self.Winodds = Winodds
         self.Favpos = Favpos
         self.Favodds = Favodds
-        self.NoRunners = NoRunner
+        self.NoRunners = NoRunners
 
 class RaceDay(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
