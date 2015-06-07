@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,29 +38,36 @@
 
         <h1>Welcome {{user.Name}}</h1>
 
-
         <div class="container-fluid">
           <div class="row">
-           <table class="table table-striped">
+          {%for race in races%}
+          <form method="POST" action="/updateselection" class="form" id="{{race.ID}}">
+          <h2>Race:{{race.RaceName}}</h2>
+          <h3>Race Date: {{race.RaceDate.strftime("%d %B, %Y")}} | Race Course: {{race.RaceCourseCode}}</h3>
+          <table class="table table-striped">
             <thead>
-              <td>ID</td>
-              <td>Racecourse Name</td>
-              <td>Race Date</td>
-              <td>Race Number</td>
-              <td>Horse Number</td>
+              <td>Runner</td>
+              <td>First</td>
+              <td>Second</td>
+              <td>Third</td>
+              <td>Fourth</td>
             </thead>
             <tbody>
-              {%for sel in selections%}
+              {%for runner in range(1,race.RaceNumber+1) %}
               <tr>
-                <td>{{sel.Selections.ID}}</td>
-                <td>{{sel[1]}}</td>
-                <td>{{sel.Selections.RaceDate.strftime('%d %B, %Y')}}</td>
-                <td>{{sel.Selections.RaceNumber}}</td>
-                <td>{{sel.Selections.HorseNumber}}</td>
+                <td>{{runner}}</td>
+                <td><input type="radio" name="race_first" value="{{runner}}"/></td>
+                <td><input type="radio" name="race_second" value="{{runner}}"/></td>
+                <td><input type="radio" name="race_third" value="{{runner}}"/></td>
+                <td><input type="radio" name="race_fourth" value="{{runner}}"/></td>
               </tr>
               {%endfor%}
             </tbody>
           </table>
+          <input type="hidden" name="race_id" value="{{race.ID}}"/>
+          <button class="saveButton">Save</button>
+          </form>
+          {%endfor%}
         </div>
       </div>
 
@@ -70,6 +76,34 @@
       </footer>
 
     </div> <!-- /container -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+    $('form').submit(function() { // catch the form's submit even
+      var form = $(this);
+    $.ajax({ // create an AJAX call...
+      
+       data: $(this).serialize(), // get the form data
+       type: $(this).attr('method'), // GET or POST
+       url: $(this).attr('action'), // the file to call
+       beforeSend: function() { // on success..
+          var form_data = '';
+          $(form).find('input:radio').each(function () {
+             if ($(this).prop('checked')){
+              form_data += $(this).attr('name').substring(5)+" " +$(this).val()+ " ";
+              };
+          });
+          confirm("Are you sure you want to submit this data: "+ form_data);
+         },
+       success: function(response) { // on success..
+           alert('saved');
+         }, 
+         error: function (xhr, status) {  
+          alert('Unknown error ' + status); 
+        } 
+      });
+   return false; // cancel original event to prevent form submitting
+ }); 
+    </script>
 
   </body>
   </html>
