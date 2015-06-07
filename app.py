@@ -11,7 +11,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL'] #'sqlite:///demo.sql'
 db = SQLAlchemy(app)
 babel = Babel(app)
 mail = Mail(app)
