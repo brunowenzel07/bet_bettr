@@ -61,7 +61,7 @@ class Selections(db.Model):
         self.HorseNumber = HorseNumber
 
 class RaceDay(db.Model):
-	ID = db.Column(db.Integer, primary_key=True)
+    ID = db.Column(db.Integer, primary_key=True)
     RaceDate = db.Column(db.TIMESTAMP())
     RaceCourseCode = db.Column(db.Integer)
 
