@@ -10,7 +10,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 from models import *
 babel = Babel(app)
@@ -43,9 +43,11 @@ def login():
                    return render_template('login.html', message=gettext('Your account is not activated yet, please check your email for activation link!'))
                 session['username'] = user.Email
                 return redirect('/')
+            print("passmismatch")
             return render_template('login.html', message=gettext('Please try again!'))
-        except:
-             return render_template('login.html', message=gettext('Please try again!'))
+        except Exception, e:
+            print str(e)
+            return render_template('login.html', message=gettext('Please try again!'))
     return render_template('login.html')
 
 @app.route('/show')
@@ -58,6 +60,20 @@ def show():
             return render_template('show.html', user=user, selections = selections)
         except:
             return redirect('/logout')
+    else:
+        return render_template('index.html')
+
+@app.route('/racedaycourse')
+def racedaycourse():
+    if 'username' in session:
+        try:
+            user = User.query.filter_by(Email=session['username']).first()
+            racecourse = Racecourses.query.subquery()
+            selections = db.session.query(Selections, racecourse.c.Name).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
+            return render_template('racedaycourse.html', user=user, selections = selections)
+        except Exception, e:
+            return str(e)
+            # return redirect('/logout')
     else:
         return render_template('index.html')
 
