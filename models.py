@@ -59,3 +59,12 @@ class Selections(db.Model):
         self.RaceDate = RaceDate
         self.RaceNumber = RaceNumber
         self.HorseNumber = HorseNumber
+
+class RaceDay(db.Model):
+	ID = db.Column(db.Integer, primary_key=True)
+    RaceDate = db.Column(db.TIMESTAMP())
+    RaceCourseCode = db.Column(db.Integer)
+
+    def __init__(self, RaceDace, RaceCourseCode):
+        self.RaceDace = RaceDace
+        self.RaceCourseCode = RaceCourseCode
