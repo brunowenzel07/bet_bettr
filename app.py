@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.ext.babel import Babel, gettext
 from models import Country, User, User_Countries, Racecourses, Selections
 import os
-from sqlalchemy import UniqueConstraint
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -28,8 +27,7 @@ def index():
         try:
             user = User.query.filter_by(Email=session['username']).first()
             return render_template('dashboard.html', user=user)
-        except Exception, e:
-            print str(e)
+        except:
             return redirect('/logout')
     else:
         return render_template('index.html')
@@ -58,9 +56,8 @@ def show():
             racecourse = Racecourses.query.subquery()
             selections = db.session.query(Selections, racecourse.c.Name).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
             return render_template('show.html', user=user, selections = selections)
-        except Exception, e:
-            return str(e)
-            # return redirect('/logout')
+        except:
+            return redirect('/logout')
     else:
         return render_template('index.html')
 
@@ -88,7 +85,8 @@ def signup():
             mail.send(msg)
 
             return render_template('signup.html', message=gettext('Signed up, please check email for confirmation link!'))
-        except:
+        except Exception, e:
+            print str(e)
             return render_template('signup.html', message=gettext('Error, please try again!'))
     return render_template('signup.html', message='')
 
