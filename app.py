@@ -50,6 +50,20 @@ def login():
              return render_template('login.html', message=gettext('Please try again!'))
     return render_template('login.html')
 
+@app.route('/show')
+def show():
+    if 'username' in session:
+        try:
+            user = User.query.filter_by(Email=session['username']).first()
+            racecourse = Racecourses.query.subquery()
+            selections = db.session.query(Selections, racecourse.c.Name).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
+            return render_template('show.html', user=user, selections = selections)
+        except Exception, e:
+            return str(e)
+            # return redirect('/logout')
+    else:
+        return render_template('index.html')
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
