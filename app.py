@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import hashlib
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort, session
@@ -10,7 +10,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 from models import *
 babel = Babel(app)
@@ -63,19 +63,54 @@ def show():
     else:
         return render_template('index.html')
 
-@app.route('/racedaycourse')
+@app.route('/racedaycourse', methods=['GET', 'POST'])
 def racedaycourse():
     if 'username' in session:
         try:
             user = User.query.filter_by(Email=session['username']).first()
-            racecourse = Racecourses.query.subquery()
-            selections = db.session.query(Selections, racecourse.c.Name).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
-            return render_template('racedaycourse.html', user=user, selections = selections)
+            if request.method == 'POST':
+                racedate = datetime.strptime(request.form['date'], "%d %B, %Y")
+            else:
+                racedate = datetime.today() + timedelta(days=-1)
+            races = Race.query.filter(Race.RaceDate>=racedate,Race.RaceDate<(racedate+timedelta(days=+1))).all()
+            return render_template('racedaycourse.html', user = user, races = races)
         except Exception, e:
             return str(e)
             # return redirect('/logout')
     else:
         return render_template('index.html')
+
+@app.route('/updateselection', methods=['POST'])
+def updateselection():
+    if 'username' in session:
+        try:
+            user = User.query.filter_by(Email=session['username']).first()
+            race = Race.query.filter_by(ID=request.form['race_id']).first()
+            try:
+                first = request.form['race_first']
+            except:
+                first = 0
+            try:
+                second = request.form['race_second']
+            except:
+                second = 0
+            try:
+                third = request.form['race_third']
+            except:
+                third = 0
+            try:
+                fourth = request.form['race_fourth']
+            except:
+                fourth = 0
+            newSelection = Selections(user.ID, race.RaceCourseCode, race.RaceDate, race.RaceNumber, first, second, third, fourth, 0, 0, 0, 12)
+            db.session.add(newSelection)
+            db.session.commit()
+            return "1"
+        except Exception, e:
+            print str(e)
+            # return "0"
+    else:
+        return "0"
 
 @app.route('/logout')
 def logout():
