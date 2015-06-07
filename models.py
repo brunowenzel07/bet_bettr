@@ -82,3 +82,20 @@ class RaceDay(db.Model):
     def __init__(self, RaceDace, RaceCourseCode):
         self.RaceDace = RaceDace
         self.RaceCourseCode = RaceCourseCode
+
+class Runner(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
+    RaceID = db.Column(db.Integer)
+    HorseNumber = db.Column(db.Integer)
+    HorseCode = db.Column(db.String(60))
+    HorseName = db.Column(db.String(60))
+    JockeyCode = db.Column(db.String(60))
+    TrainerCode = db.Column(db.String(60))
+
+    def __init__(self, RaceID, HorseNumber, HorseCode, HorseName, JockeyCode, TrainerCode):
+        self.RaceID = RaceID 
+        self.HorseNumber = HorseNumber 
+        self.HorseCode = HorseCode 
+        self.HorseName = HorseName 
+        self.JockeyCode = JockeyCode 
+        self.TrainerCode = TrainerCode
