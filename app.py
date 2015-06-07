@@ -16,7 +16,10 @@ from models import *
 babel = Babel(app)
 mail = Mail(app)
 
-db.create_all()
+try:
+    db.create_all()
+except Exception, e:
+    print str(e)
 
 @app.route('/')
 def index():
