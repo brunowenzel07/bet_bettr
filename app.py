@@ -72,7 +72,7 @@ def racedaycourse():
                 racedate = datetime.strptime(request.form['date'], "%d %B, %Y")
             else:
                 racedate = datetime.today() + timedelta(days=-1)
-            races = Race.query.filter(Race.RaceDate>=racedate,Race.RaceDate<(racedate+timedelta(days=+1))).all()
+            races = Race.query.filter(Race.RaceDate>=racedate,Race.RaceDate<(racedate+timedelta(days=+2))).all()
             return render_template('racedaycourse.html', user = user, races = races)
         except Exception, e:
             return str(e)
