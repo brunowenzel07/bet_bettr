@@ -80,27 +80,27 @@
     <script type="text/javascript">
     $('form').submit(function() { // catch the form's submit even
       var form = $(this);
-    $.ajax({ // create an AJAX call...
-      
+      var form_data = '';
+      $(form).find('input:radio').each(function () {
+       if ($(this).prop('checked')){
+        form_data += $(this).attr('name').substring(5)+" " +$(this).val()+ " ";
+      };
+    });
+      var confirm_box = confirm("Are you sure you want to submit this data: "+ form_data);
+      if (confirm_box == true){
+        $.ajax({ // create an AJAX call...
+          
        data: $(this).serialize(), // get the form data
        type: $(this).attr('method'), // GET or POST
        url: $(this).attr('action'), // the file to call
-       beforeSend: function() { // on success..
-          var form_data = '';
-          $(form).find('input:radio').each(function () {
-             if ($(this).prop('checked')){
-              form_data += $(this).attr('name').substring(5)+" " +$(this).val()+ " ";
-              };
-          });
-          confirm("Are you sure you want to submit this data: "+ form_data);
-         },
        success: function(response) { // on success..
-           alert('saved');
-         }, 
-         error: function (xhr, status) {  
-          alert('Unknown error ' + status); 
-        } 
-      });
+         alert('saved');
+       }, 
+       error: function (xhr, status) {  
+        alert('Unknown error ' + status); 
+      } 
+    });
+      }
    return false; // cancel original event to prevent form submitting
  }); 
     </script>
