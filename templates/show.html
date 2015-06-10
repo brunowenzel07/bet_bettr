@@ -56,7 +56,7 @@
                 <td>{{sel[1]}}</td>
                 <td>{{sel.Selections.RaceDate.strftime('%d %B, %Y')}}</td>
                 <td>{{sel.Selections.RaceNumber}}</td>
-                <td>{{sel.Selections.First}}-{{sel.Selections.Second}}-{{sel.Selections.Third}}-{{sel.Selections.Fourth}}</td>
+                <td>{{sel.Selections.First}}-{{sel.Selections.Second}}-{{sel.Selections.Third}}{%if sel.Selections.Fourth%}-{{sel.Selections.Fourth}}{%endif%}</td>
               </tr>
               {%endfor%}
             </tbody>
