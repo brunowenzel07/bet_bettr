@@ -56,10 +56,10 @@
               {%for runner in range(1,race.RaceNumber+1) %}
               <tr>
                 <td>{{runner}}</td>
-                <td><input type="radio" name="race_first" value="{{runner}}"/></td>
-                <td><input type="radio" name="race_second" value="{{runner}}"/></td>
-                <td><input type="radio" name="race_third" value="{{runner}}"/></td>
-                <td><input type="radio" name="race_fourth" value="{{runner}}"/></td>
+                <td><input type="radio" name="race_first" value="{{runner}}" {%if race.RaceCourseCode in selections and loop.index == selections[race.RaceCourseCode][0] %}checked="checked"{%endif%}/></td>
+                <td><input type="radio" name="race_second" value="{{runner}}" {%if race.RaceCourseCode in selections and loop.index == selections[race.RaceCourseCode][1] %}checked="checked"{%endif%}/></td>
+                <td><input type="radio" name="race_third" value="{{runner}}" {%if race.RaceCourseCode in selections and loop.index == selections[race.RaceCourseCode][2] %}checked="checked"{%endif%}/></td>
+                <td><input type="radio" name="race_fourth" value="{{runner}}" {%if race.RaceCourseCode in selections and loop.index == selections[race.RaceCourseCode][3] %}checked="checked"{%endif%}/></td>
               </tr>
               {%endfor%}
             </tbody>
@@ -89,7 +89,7 @@
       var confirm_box = confirm("Are you sure you want to submit this data: "+ form_data);
       if (confirm_box == true){
         $.ajax({ // create an AJAX call...
-          
+
        data: $(this).serialize(), // get the form data
        type: $(this).attr('method'), // GET or POST
        url: $(this).attr('action'), // the file to call
