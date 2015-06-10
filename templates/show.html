@@ -47,7 +47,7 @@
               <td>Racecourse Name</td>
               <td>Race Date</td>
               <td>Race Number</td>
-              <td>Horse Number</td>
+              <td>Selection</td>
             </thead>
             <tbody>
               {%for sel in selections%}
@@ -56,7 +56,7 @@
                 <td>{{sel[1]}}</td>
                 <td>{{sel.Selections.RaceDate.strftime('%d %B, %Y')}}</td>
                 <td>{{sel.Selections.RaceNumber}}</td>
-                <td>{{sel.Selections.HorseNumber}}</td>
+                <td>{{sel.Selections.First}}-{{sel.Selections.Second}}-{{sel.Selections.Third}}-{{sel.Selections.Fourth}}</td>
               </tr>
               {%endfor%}
             </tbody>
