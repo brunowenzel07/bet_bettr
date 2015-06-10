@@ -48,10 +48,10 @@
           <table class="table table-striped race-table">
             <thead>
               <td>Runner</td>
-              <td class="15percent">First</td>
-              <td class="15percent">Second</td>
-              <td class="15percent">Third</td>
-              <td class="15percent">Fourth</td>
+              <td class="wid15">First</td>
+              <td class="wid15">Second</td>
+              <td class="wid15">Third</td>
+              <td class="wid15">Fourth</td>
             </thead>
             <tbody>
               {%for runner in range(1,race.RaceNumber+1) %}
@@ -65,7 +65,7 @@
               {%endfor%}
             </tbody>
           </table>
-          <input type="hidden" name="race_id" value="{{race.ID}}"/>
+          <input type="hidden" name="race_id" value="{{race.ID}}" data-raceid="{{race.ID}}" data-utctimestamp="{{race.UTCRaceTime}}"/>
           <button class="saveButton">Save</button>
           </form>
           {%endfor%}
@@ -88,7 +88,10 @@
           form_data += "<br><strong>"+$(this).attr('name').substring(5)+"</strong>: " +$(this).val();
         };
       });
-        swal({   title: "Are you sure?",   text: "Do you want to submit this selection: " + form_data, html: true,  type: "info",   showCancelButton: true,   confirmButtonColor: "green",   confirmButtonText: "Submit!",   closeOnConfirm: false }, function(){  $.ajax({
+
+        // get the timestamp
+        var utc_timestamp = $(this).find('[name=race_id]').attr('data-utctimestamp');
+        swal({   title: "Are you sure?",   text: "Do you want to submit this selection: " + form_data + "<br><br>The selection for the has to be submitted before the race start time in order to be valid. <br>UTC time of the race is: <br><strong>"+ utc_timestamp+"</strong>", html: true,  type: "info",   showCancelButton: true,   confirmButtonColor: "green",   confirmButtonText: "Submit!",   closeOnConfirm: false }, function(){  $.ajax({
 
          data: form.serialize(),
          type: 'POST',
