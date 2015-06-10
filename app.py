@@ -10,7 +10,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 from models import *
 babel = Babel(app)
@@ -108,6 +108,12 @@ def updateselection():
                 fourth = request.form['race_fourth']
             except:
                 fourth = 0
+
+            #check is there a selection for this user and this racecourse code already made, if so remove it
+            oldSelection = Selections.query.filter_by(Userid=user.ID,Racecourseid=race.RaceCourseCode).first()
+            if oldSelection:
+                db.session.delete(oldSelection)
+                db.session.commit()
             newSelection = Selections(user.ID, race.RaceCourseCode, race.RaceDate, race.RaceNumber, first, second, third, fourth, 0, 0, 0, 12)
             db.session.add(newSelection)
             db.session.commit()
