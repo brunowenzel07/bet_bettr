@@ -45,13 +45,13 @@
           <form method="POST" action="/updateselection" class="form" id="{{race.ID}}">
           <h2>Race:{{race.RaceName}}</h2>
           <h3>Race Date: {{race.RaceDate.strftime("%d %B, %Y")}} | Race Course: {{race.RaceCourseCode}}</h3>
-          <table class="table table-striped">
+          <table class="table table-striped race-table">
             <thead>
               <td>Runner</td>
-              <td>First</td>
-              <td>Second</td>
-              <td>Third</td>
-              <td>Fourth</td>
+              <td class="15percent">First</td>
+              <td class="15percent">Second</td>
+              <td class="15percent">Third</td>
+              <td class="15percent">Fourth</td>
             </thead>
             <tbody>
               {%for runner in range(1,race.RaceNumber+1) %}

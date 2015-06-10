@@ -77,3 +77,11 @@ body {
     border-bottom: 0;
   }
 }
+
+.race-table {
+  text-align: center;
+}
+
+.wid15 {
+  width: 15%;
+}
