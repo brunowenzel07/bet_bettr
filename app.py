@@ -73,7 +73,13 @@ def racedaycourse():
             else:
                 racedate = datetime.today() + timedelta(days=-1)
             races = Race.query.filter(Race.RaceDate>=racedate,Race.RaceDate<(racedate+timedelta(days=+2))).all()
-            return render_template('racedaycourse.html', user = user, races = races)
+
+            #get the selections user already made
+            selections = {}
+            sels = Selections.query.filter_by(Userid=user.ID).all()
+            for s in sels:
+                selections[s.Racecourseid] = [s.First, s.Second, s.Third, s.Fourth]
+            return render_template('racedaycourse.html', user = user, races = races, selections=selections)
         except Exception, e:
             return str(e)
             # return redirect('/logout')
