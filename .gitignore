@@ -27,6 +27,7 @@ app.sql
 *.xlsx
 *.pyc
 *.sql
+races.csv
 
 # Ins
 gist.txt
