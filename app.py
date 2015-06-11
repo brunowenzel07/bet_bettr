@@ -69,17 +69,18 @@ def racedaycourse():
         try:
             user = User.query.filter_by(Email=session['username']).first()
             if request.method == 'POST':
-                racedate = datetime.strptime(request.form['date'], "%d %B, %Y")
+                racedate_min = datetime.strptime(request.form['date'], "%m/%d/%Y") + timedelta(seconds=-1)
             else:
-                racedate = datetime.today() + timedelta(days=-1)
-            races = Race.query.filter(Race.RaceDate>=racedate,Race.RaceDate<(racedate+timedelta(days=+2))).all()
+                racedate_min = datetime.strptime(datetime.today().strftime("%Y-%m-%d"), "%Y-%m-%d") + timedelta(seconds=-1)
+            racedate_max = racedate_min + timedelta(days=1)
+            races = Race.query.filter(Race.RaceDate>=racedate_min,Race.RaceDate<=racedate_max).all()
 
             #get the selections user already made
             selections = {}
             sels = Selections.query.filter_by(Userid=user.ID).all()
             for s in sels:
                 selections[s.Racecourseid] = [s.First, s.Second, s.Third, s.Fourth]
-            return render_template('racedaycourse.html', user = user, races = races, selections=selections)
+            return render_template('racedaycourse.html', user = user, races = races, selections=selections,current_date=racedate_max.strftime("%m/%d/%Y"))
         except Exception, e:
             return str(e)
             # return redirect('/logout')
