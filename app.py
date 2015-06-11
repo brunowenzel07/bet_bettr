@@ -10,7 +10,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 from models import *
 babel = Babel(app)
@@ -56,7 +56,7 @@ def show():
         try:
             user = User.query.filter_by(Email=session['username']).first()
             racecourse = Racecourses.query.subquery()
-            selections = db.session.query(Selections, racecourse.c.Name).filter(Selections.Userid=user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
+            selections = db.session.query(Selections, racecourse.c.Name).filter(Selections.Userid==user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
             return render_template('show.html', user=user, selections = selections)
         except:
             return redirect('/logout')
