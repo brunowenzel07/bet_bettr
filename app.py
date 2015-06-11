@@ -56,7 +56,7 @@ def show():
         try:
             user = User.query.filter_by(Email=session['username']).first()
             racecourse = Racecourses.query.subquery()
-            selections = db.session.query(Selections, racecourse.c.Name).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
+            selections = db.session.query(Selections, racecourse.c.Name).filter(Selections.Userid=user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
             return render_template('show.html', user=user, selections = selections)
         except:
             return redirect('/logout')
