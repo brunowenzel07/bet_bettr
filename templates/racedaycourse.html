@@ -40,12 +40,6 @@
 
         <h1>Welcome {{user.Name}}</h1>
 
-        <form method="POST" action="/racedaycourse" id="date_form">
-          <label for="date">Pick a date</label>
-          <input type="text" name="date" id="date" value="{{current_date}}" required/>
-          <button type="submit">Change date</button>
-        </form>
-
         <div class="container-fluid">
           <div class="row">
           {%for race in races%}
@@ -122,7 +116,6 @@
         }
         return false;
       }); 
-      $("#date").datepicker({orientation:'top'});
     </script>
 
   </body>
