@@ -83,26 +83,35 @@
       $('form').submit(function() {
         var form = $(this);
         var form_data = '';
+        var items_selected = 0;
         $(form).find('input:radio').each(function () {
          if ($(this).prop('checked')){
+          items_selected += 1;
           form_data += "<br><strong>"+$(this).attr('name').substring(5)+"</strong>: " +$(this).val();
-        };
-      });
+            };
+          });
 
-        // get the timestamp
-        var utc_timestamp = $(this).find('[name=race_id]').attr('data-utctimestamp');
-        swal({   title: "Are you sure?",   text: "Do you want to submit this selection: " + form_data + "<br><br>The selection for the has to be submitted before the race start time in order to be valid. <br>UTC time of the race is: <br><strong>"+ utc_timestamp+"</strong>", html: true,  type: "info",   showCancelButton: true,   confirmButtonColor: "green",   confirmButtonText: "Submit!",   closeOnConfirm: false }, function(){  $.ajax({
+        // check has the user made 4 selections
+        if (items_selected == 4){
 
-         data: form.serialize(),
-         type: 'POST',
-         url: '/updateselection',
-         success: function(response) {
-          swal('Saved!','Your selection has been updated!', 'success');
-         }, 
-         error: function (xhr, status) {  
-          swal('Error', 'Unknown error' + status, 'error'); 
-        } 
-      });  });
+          // get the timestamp
+          var utc_timestamp = $(this).find('[name=race_id]').attr('data-utctimestamp');
+          swal({   title: "Are you sure?",   text: "Do you want to submit this selection: " + form_data + "<br><br>The selection for the has to be submitted before the race start time in order to be valid. <br>UTC time of the race is: <br><strong>"+ utc_timestamp+"</strong>", html: true,  type: "info",   showCancelButton: true,   confirmButtonColor: "green",   confirmButtonText: "Submit!",   closeOnConfirm: false }, function(){  $.ajax({
+
+             data: form.serialize(),
+             type: 'POST',
+             url: '/updateselection',
+             success: function(response) {
+              swal('Saved!','Your selection has been updated!', 'success');
+               }, 
+               error: function (xhr, status) {  
+                swal('Error', 'Unknown error' + status, 'error'); 
+              } 
+            });  
+          });
+        } else {
+          swal('error', 'You need to make all four selections in order for your submission to be valid!', 'error');
+        }
         return false;
       }); 
     </script>
