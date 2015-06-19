@@ -17,6 +17,7 @@ babel = Babel(app)
 mail = Mail(app)
 
 try:
+    db.drop_all()
     db.create_all()
 except Exception, e:
     print str(e)

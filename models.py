@@ -4,13 +4,13 @@ from sqlalchemy.types import Float, Unicode, BigInteger, Integer, Boolean, Date,
 from sqlalchemy.orm import relationship, backref
 from app import db
 
-class Country(db.Model):
-    __tablename__ = "Country"
-    ID = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String(60))
+# class Country(db.Model):
+#     __tablename__ = "Country"
+#     ID = db.Column(db.Integer, primary_key=True)
+#     Name = db.Column(db.String(60))
 
-    def __init__(self, Name):
-        self.Name = Name
+#     def __init__(self, Name):
+#         self.Name = Name
 
 class User(db.Model):
     __tablename__ = "User"
@@ -21,54 +21,59 @@ class User(db.Model):
     Animal = db.Column(db.String(60))
     DateSignedUp = db.Column(db.TIMESTAMP())
     performances = relationship("UserPerformance")
+    __table_args__ = (UniqueConstraint('Name', 'Animal'),)
 
-    def __init__(self, Email, Password, Name, DateSignedUp):
+    def __init__(self, Email, Password, Name, DateSignedUp, Animal):
         self.Email = Email
         self.Password = Password
         self.Name = Name
         self.DateSignedUp = DateSignedUp
+        self.Animal = Animal
 
-class User_Countries(db.Model):
-    __tablename__ = "User_Countries"
-    ID = db.Column(db.Integer, primary_key=True)
-    Userid = db.Column(db.Integer)
-    Countryid = db.Column(db.Integer)
-    DateStart = db.Column(db.TIMESTAMP())
-    Active = db.Column(db.Boolean)
+# class User_Countries(db.Model):
+#     __tablename__ = "User_Countries"
+#     ID = db.Column(db.Integer, primary_key=True)
+#     Userid = db.Column(db.Integer)
+#     Countryid = db.Column(db.Integer)
+#     DateStart = db.Column(db.TIMESTAMP())
+#     Active = db.Column(db.Boolean)
 
-    def __init__(self, Userid, Countryid, DateStart, Active):
-        self.Userid = Userid
-        self.Countryid = Countryid
-        self.DateStart = DateStart
-        self.Active = Active
+#     def __init__(self, Userid, Countryid, DateStart, Active):
+#         self.Userid = Userid
+#         self.Countryid = Countryid
+#         self.DateStart = DateStart
+#         self.Active = Active
 
-class Racecourses(db.Model):
-    __tablename__ = "Racecourses"
-    ID = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String(60), unique=True)
+# class Racecourses(db.Model):
+#     __tablename__ = "Racecourses"
+#     ID = db.Column(db.Integer, primary_key=True)
+#     Name = db.Column(db.String(60), unique=True)
 
-    def __init__(self, Name):
-        self.Name = Name
+#     def __init__(self, Name):
+#         self.Name = Name
+
+#separate class for Napoleon based on RaceDay
 
 class Selection(db.Model):
     __tablename__ = "Selection" 
     ID = db.Column(db.Integer, primary_key=True)
-    Userid = db.Column(db.Integer)
-    Racecourseid = db.Column(db.Integer)
-    RaceDate = db.Column(db.TIMESTAMP())
-    RaceNumber = db.Column(db.Integer)
+    UserID = db.Column(db.Integer,ForeignKey('User.ID'))
+    RaceID = db.Column(db.Integer, ForeignKey('Race.ID'))
+    # Racecourseid = db.Column(db.Integer) 
+    # RaceDate = db.Column(db.TIMESTAMP())
+    # RaceNumber = db.Column(db.Integer)
     First = db.Column(db.Integer)
     Second = db.Column(db.Integer)
     Third = db.Column(db.Integer)
     Fourth = db.Column(db.Integer)
-    SubmittedAt = db.Column(db.TIMESTAMP())
-    __table_args__ = (UniqueConstraint('Userid', 'Racecourseid', 'SubmittedAt', 'RaceNumber'),)
+    SubmittedAt = db.Column(db.DateTime)
+    __table_args__ = (UniqueConstraint('UserID', 'RaceID'),)
 
-    def __init__(self, Userid, Racecourseid, RaceDate, RaceNumber, First, Second, Third, Fourth, Winodds, Favpos, Favodds, NoRunners):
-        self.Userid = Userid
-        self.Racecourseid = Racecourseid
-        self.RaceDate = RaceDate
-        self.RaceNumber = RaceNumber
+    def __init__(self, UserID, RaceID, First, Second, Third, Fourth, SubmittedAt):
+        self.UserID = UserID
+        self.RaceID = RaceID
+        # self.RaceDate = RaceDate
+        # self.RaceNumber = RaceNumber
         self.First = First
         self.Second = Second
         self.Third = Third
@@ -83,8 +88,8 @@ class RaceDay(db.Model):
     RaceCourseCode = db.Column(db.Integer)
     races = relationship('Race')
 
-    def __init__(self, RaceDace, RaceCourseCode):
-        self.RaceDace = RaceDace
+    def __init__(self, RaceDate, RaceCourseCode):
+        self.RaceDate = RaceDate
         self.RaceCourseCode = RaceCourseCode
 
 # 1Race: Many runners
@@ -124,9 +129,10 @@ class Race(db.Model):
     RaceDistance = db.Column(Integer) # 1000
     UTCRaceTime = db.Column(db.TIMESTAMP()) #exact jump time updatable
     TrackWidth = db.Column(db.Float)
-    WinOdds = db.Column(db.Integer)
+    Result = db.Column(db.String(20)) 
+    WinOdds = db.Column(db.Float)
     FavPos = db.Column(db.Integer)
-    FavOdds = db.Column(db.Integer)
+    FavOdds = db.Column(db.Float)
     NoRunners = db.Column(db.Integer) #count runners
     TrioDiv = db.Column(db.Float)
     TierceDiv = db.Column(db.Float)
@@ -134,27 +140,39 @@ class Race(db.Model):
     QuartetDiv = db.Column(db.Float)
     runners = relationship("Runner")
 
-
-    def __init__(self, RaceDate, RaceCourseCode, RaceName, RaceNumber, RaceType, RaceGoing, RaceRating, RaceSurface, UTCRaceTime, TrackWidth):
+    def __init__(self, RaceDayID, RaceDate, RaceCourseCode, RaceNumber, Result, WinOdds, FavPos, FavOdds, NoRunners):
+        self.RaceDayID = RaceDayID
         self.RaceDate = RaceDate
         self.RaceCourseCode = RaceCourseCode
-        self.RaceName = RaceName
         self.RaceNumber = RaceNumber
-        self.RaceType = RaceType
-        self.RaceGoing = RaceGoing
-        self.RaceRating = RaceRating
-        self.RaceSurface = RaceSurface
-        self.UTCRaceTime = UTCRaceTime
-        self.TrackWidth = TrackWidth
+        self.Result = Result
         self.WinOdds = WinOdds
         self.FavPos = FavPos
         self.FavOdds = FavOdds
         self.NoRunners = NoRunners
-        self.RaceDayID = RaceDayID
-        self.TrioDiv = TrioDiv
-        self.TierceDiv = TierceDiv
-        self.F4Div = F4Div
-        self.QuartetDiv = QuartetDiv 
+
+    # def __init__(self, RaceDate, RaceCourseCode, RaceNumber, Result, WinOdds, FavPos, FavOdds, NoRunners, RaceName=None, RaceType=None, RaceGoing=None, RaceRating=None, \
+    #     RaceSurface=None, UTCRaceTime=None, TrackWidth=None, RaceDayID=None, TrioDiv=None, TierceDiv=None, F4Div=None, QuartetDiv=None):
+    #     self.RaceDate = RaceDate
+    #     self.RaceCourseCode = RaceCourseCode
+    #     self.RaceNumber = RaceNumber
+    #     self.Result = Result
+    #     self.WinOdds = WinOdds
+    #     self.FavPos = FavPos
+    #     self.FavOdds = FavOdds
+    #     self.NoRunners = NoRunners
+    #     self.RaceType = RaceType
+    #     self.RaceGoing = RaceGoing
+    #     self.RaceRating = RaceRating
+    #     self.RaceSurface = RaceSurface
+    #     self.UTCRaceTime = UTCRaceTime
+    #     self.TrackWidth = TrackWidth
+    #     self.RaceName = RaceName
+    #     self.RaceDayID = RaceDayID
+    #     self.TrioDiv = TrioDiv
+    #     self.TierceDiv = TierceDiv
+    #     self.F4Div = F4Div
+    #     self.QuartetDiv = QuartetDiv 
 
 #SELECTION AGGREGATES
 #user:user_performances 1:M performance updated after each meeting
@@ -162,10 +180,29 @@ class UserPerformance(db.Model):
     __tablename__ = "UserPerformance"
     ID = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False) # Unique ID
     RaceDate = db.Column(Date, nullable=False)
-    Userid = db.Column(db.Integer, ForeignKey('User.ID'))
+    UserID = db.Column(db.Integer, ForeignKey('User.ID'))
     Winpc = db.Column(Float, nullable=False)
+    Wins = db.Column(Integer)
+    Losses = db.Column(Integer)
+    NonRunners = db.Column(Integer)
+    MaxSeqWin = db.Column(Integer)
+    MaxSeqLose = db.Column(Integer)
+    PresSeqWin = db.Column(Integer)
+    PresSeqLose = db.Column(Integer)
+    MonthRoi = db.Column(Float)
+    SeasonRoi = db.Column(Float)
+    SeasonWins = db.Column(Integer)
+    SeasonLosses = db.Column(Integer)
+    NapsWins = db.Column(Integer)
+    NapsLosses = db.Column(Integer)
+    NapsWinpc = db.Column(Float)
+    NapsMaxSeqWin = db.Column(Integer)
+    NapsMaxSeqLose = db.Column(Integer)
+    NapsPresSeqWin = db.Column(Integer)
+    NapsPresSeqLose = db.Column(Integer)
     AvgWinOdds = db.Column(Float, nullable=False)
     Kelly_L200 = db.Column(Float)
+    Kelly_Season = db.Column(Float)
     Placepc = db.Column(Float, nullable=False)
     Tiercepc = db.Column(Float)
     AvgTierceOdds = db.Column(Float)
@@ -174,6 +211,8 @@ class UserPerformance(db.Model):
     F4pc = db.Column(Float)
     QTTpc = db.Column(Float)
     AvgF4Odds = db.Column(Float)
+
+    #INIT
 
 
 #ODDS
