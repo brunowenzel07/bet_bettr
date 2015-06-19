@@ -85,7 +85,7 @@ class RaceDay(db.Model):
     __tablename__ = "RaceDay"
     ID = db.Column(db.Integer, primary_key=True)
     RaceDate = db.Column(db.TIMESTAMP())
-    RaceCourseCode = db.Column(db.Integer)
+    RaceCourseCode = db.Column(db.String(5))
     races = relationship('Race')
 
     def __init__(self, RaceDate, RaceCourseCode):

@@ -47,8 +47,7 @@ assert db.session.query(func.count(User.ID)).first() == (9,)
 
 
 
-tips_file = "TIPSDATA20150611.csv"
-csv_file = csv.DictReader(open(tips_file, 'rU'), delimiter=',')
+
 
 
 
@@ -69,6 +68,38 @@ csv_file = csv.DictReader(open(tips_file, 'rU'), delimiter=',')
 # 	rd =get_or_create(db.session,RaceDay, **racedays)
 
 ##RACES NEED RACEDAY ID
+
+# with open(tips_file, 'rU') as csvfile:
+# 	reader = csv.DictReader(csvfile)
+# 	for row in reader:
+# 		races = {}
+# 		racedays = {}
+# 		selections = {}
+# 		#each row is a dictionary key(header): value
+# 		#get keys for race, create race get id
+# 		raceinfo_ = row['RACEDATE|RACECODE|RACENUMBER']
+# 		if raceinfo_ != '' or raceinfo_ is not None:
+# 			m = re.match(r"^(?P<racedate>\d+)(?P<racecoursecode>HV|ST)(?P<racenumber>\d+)", raceinfo_)
+# 			racedate_ = datetime.strptime(m.group("racedate"), "%Y%m%d")
+# 			racecoursecode_ = m.group("racecoursecode")
+# 			racenumber_ = int(m.group("racenumber"))
+# 			racedays["RaceDate"] = racedate_
+# 			racedays["RaceCourseCode"] = racecoursecode_
+# 			racedayid_ = get_or_create(db.session,RaceDay, **racedays)
+# 		#get k for User get id
+# 			races["RaceDayID"] = racedayid_.ID #RaceDayID
+# 			races["RaceNumber"] = racenumber_
+# 			races["Result"] = row['RESULT']
+# 			races["WinOdds"] = row['WINODDS']
+# 			races['FavPos'] = row['FAVPOS']
+# 			races['NoRunners'] = row['NORUNNERS']
+# 			races['FavOdds'] = row['FAVODDS']
+# 			r = get_or_create(db.session,Race, **races)
+
+### RACEDAYS AND RACES
+##THIS WORKS DONT CHANGE IT!!
+tips_file = "TIPSDATA20150611.csv"
+csv_file = csv.DictReader(open(tips_file, 'rU'), delimiter=',')
 for row in csv_file:
 	races = {}
 	racedays = {}
@@ -100,6 +131,7 @@ for row in csv_file:
 			races["FavOdds"] = float(value)
 	# pprint.pprint(races)
 	r = get_or_create(db.session,Race, **races)
+
 	# pprint.pprint(races)
 nth = {
     1: "First",
@@ -107,13 +139,24 @@ nth = {
     3: "Third",
     4: "Fourth"
 }
+
+# We have raceday, race and user
+
+
 csv_file2 = csv.DictReader(open(tips_file, 'rU'), delimiter=',')
-##ROUND2
+# ##ROUND2
 record_count = 0
 for row in csv_file2:
+	# races_ = {}
 	selections = {}
-	races_ = {}
+	users = {}
 	for key, value in row.items():
+		record_count +=1
+		# pprint.pprint(key)
+		# print ">>>>>>>>>>>>>>>>>>>>"
+		# pprint.pprint(value)
+		if key or value == '':
+			pass
 		if key == "RACEDATE|RACECODE|RACENUMBER" and value != '':
 			# print key, value
 			m = re.match(r"^(?P<racedate>\d+)(?P<racecoursecode>HV|ST)(?P<racenumber>\d+)", value)
@@ -125,26 +168,32 @@ for row in csv_file2:
 			races["RaceCourseCode"] = racecoursecode_
 			races["RaceNumber"] = racenumber_
 			# selections["RaceID"] = get_or_create(db.session,Race, **races_).ID
-			selections["RaceID"] = db.session.query(Race.ID).filter_by(RaceDate = racedate_, RaceCourseCode= racecoursecode_, RaceNumber= racenumber_).first().ID
+			###GET
+			selections["RaceID"] =  get_id(db.session,Race, **races)
+			# selections["RaceID"] = db.session.query(Race.ID).filter_by(RaceDate = racedate_, RaceCourseCode= racecoursecode_, RaceNumber= racenumber_).first().ID
  		if key in user_names and value != '':
  			# pprint.pprint(key)
-			userid_ = db.session.query(User.ID).filter_by(Name = key).first()
-			selections["UserID"] = userid_.ID
+ 			users["Name"] = key
+			# userid_ = db.session.query(User.ID).filter_by(Name = key).first()
+			userid_ = get_id(db.session,User, **users)
+			selections["UserID"] = userid_
 			# selections["tipster"] = key
 			# selections["tips"] = value
 			tips_ = value.split('-')
-			selections['First'] = tips_[0]
-			selections['Second'] = tips_[1]
-			selections['Third'] = tips_[2]
-			# selections['Fourth'] = None
-			selections['Fourth'] = tips_[3] if len(tips_) ==4 else None
-			# for i,t in enumerate(tips_):
-			# 	selections[nth[i+1]] = t
-			selections["SubmittedAt"] = now 
+			selections['First'] = int(tips_[0])
+			selections['Second'] = int(tips_[1])
+			selections['Third'] = int(tips_[2])
+			selections['Fourth'] = int(tips_[3]) if len(tips_) ==4 else None
+			selections["SubmittedAt"] = now
 		pprint.pprint(selections)
-		record_count +=1
-	s = get_or_create(db.session,Selection, **selections)
-	pprint.pprint(record_count)
+		if len(selections) >0:
+			s = get_or_create(db.session,Selection, **selections)
+		# pprint.pprint(races)
+		# pprint.pprint(selections)
+	
+	# pprint.pprint(s)
+	# pprint.pprint(record_count)
+
 '''
 	Selection
     Userid = db.Column(db.Integer)

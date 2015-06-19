@@ -30,6 +30,15 @@ def get_or_create_two(session, model, defaults=None, **kwargs):
         raise e
 
 
+##replaces
+## db.session.query(Race.ID).filter_by(RaceDate = racedate_, RaceCourseCode= racecoursecode_, RaceNumber= racenumber_).first().ID
+def get_id(session, model, **kwargs):
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance.ID
+    else:
+        return None
+
 def get_or_create(session, model, **kwargs):
 	instance = session.query(model).filter_by(**kwargs).first()
 	if instance:
