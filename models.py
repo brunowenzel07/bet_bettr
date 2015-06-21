@@ -129,7 +129,11 @@ class Race(db.Model):
     RaceDistance = db.Column(Integer) # 1000
     UTCRaceTime = db.Column(db.TIMESTAMP()) #exact jump time updatable
     TrackWidth = db.Column(db.Float)
-    Result = db.Column(db.String(20)) 
+    Result = db.Column(db.String(20))
+    R1 = db.Column(db.Integer)
+    R2 = db.Column(db.Integer)
+    R3 = db.Column(db.Integer)
+    R4 = db.Column(db.Integer)
     WinOdds = db.Column(db.Float)
     FavPos = db.Column(db.Integer)
     FavOdds = db.Column(db.Float)
@@ -140,7 +144,7 @@ class Race(db.Model):
     QuartetDiv = db.Column(db.Float)
     runners = relationship("Runner")
 
-    def __init__(self, RaceDayID, RaceDate, RaceCourseCode, RaceNumber, Result, WinOdds, FavPos, FavOdds, NoRunners):
+    def __init__(self, RaceDayID, RaceDate, RaceCourseCode, RaceNumber, Result, WinOdds, FavPos, FavOdds, NoRunners, R1, R2, R3, R4):
         self.RaceDayID = RaceDayID
         self.RaceDate = RaceDate
         self.RaceCourseCode = RaceCourseCode
@@ -150,6 +154,11 @@ class Race(db.Model):
         self.FavPos = FavPos
         self.FavOdds = FavOdds
         self.NoRunners = NoRunners
+        self.R1 = R1
+        self.R2 = R2
+        self.R3 = R3
+        self.R4 = R4
+
 
     # def __init__(self, RaceDate, RaceCourseCode, RaceNumber, Result, WinOdds, FavPos, FavOdds, NoRunners, RaceName=None, RaceType=None, RaceGoing=None, RaceRating=None, \
     #     RaceSurface=None, UTCRaceTime=None, TrackWidth=None, RaceDayID=None, TrioDiv=None, TierceDiv=None, F4Div=None, QuartetDiv=None):
@@ -174,7 +183,23 @@ class Race(db.Model):
     #     self.F4Div = F4Div
     #     self.QuartetDiv = QuartetDiv 
 
-#SELECTION AGGREGATES
+class Naps(db.Model):
+    __tablename__ = "Naps"
+    ID = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False)
+    RaceDayID = db.Column(db.Integer, ForeignKey('RaceDay.ID'))
+    RaceNumberSelection = db.Column(db.String(10))
+    UserID = db.Column(db.Integer,ForeignKey('User.ID'))
+    RaceID = db.Column(db.Integer, ForeignKey('Race.ID'))
+    isWin = db.Column(db.Boolean)
+
+    def __init__(self, RaceDayID, RaceNumberSelection, UserID, RaceID, isWin):
+        self.RaceDayID = RaceDayID
+        self.RaceNumberSelection = RaceNumberSelection
+        self.UserID = UserID
+        self.RaceID = RaceID
+        self.isWin =  isWin
+
+#SELECTIONGGREGATES
 #user:user_performances 1:M performance updated after each meeting
 class UserPerformance(db.Model):
     __tablename__ = "UserPerformance"
@@ -183,6 +208,7 @@ class UserPerformance(db.Model):
     UserID = db.Column(db.Integer, ForeignKey('User.ID'))
     Winpc = db.Column(Float, nullable=False)
     Wins = db.Column(Integer)
+    TotalWinOdds = db.Column(Float)
     Losses = db.Column(Integer)
     NonRunners = db.Column(Integer)
     MaxSeqWin = db.Column(Integer)
