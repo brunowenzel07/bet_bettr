@@ -43,20 +43,37 @@
           <div class="row">
            <table class="table table-striped">
             <thead>
-              <td>ID</td>
-              <td>Racecourse Name</td>
               <td>Race Date</td>
+              <td>Racecourse Code</td>
               <td>Race Number</td>
-              <td>Selection</td>
+              <td>Result</td>
+              <td>Race Number</td>
+              <td>Win Odds</td>
+              <td>Favorite Position</td>
+              <td>Favorite Odds</td>
+              <td># of Runners</td>
+              <td>Selection 1st</td>
+              <td>Selection 2nd</td>
+              <td>Selection 3rd</td>
+              <td>Selection 4th</td>
+              <td>Submitted at</td>
             </thead>
             <tbody>
               {%for sel in selections%}
               <tr>
-                <td>{{sel.Selections.ID}}</td>
-                <td>{{sel[1]}}</td>
-                <td>{{sel.Selections.RaceDate.strftime('%d %B, %Y')}}</td>
-                <td>{{sel.Selections.RaceNumber}}</td>
-                <td>{{sel.Selections.First}}-{{sel.Selections.Second}}-{{sel.Selections.Third}}{%if sel.Selections.Fourth%}-{{sel.Selections.Fourth}}{%endif%}</td>
+                <td>{{sel[1]}}.strftime('%d %B, %Y')}}</td>
+                <td>{{sel[2]}}</td>
+                <td>{{sel[3]}}</td>
+                <td>{{sel[4]}}</td>
+                <td>{{sel[5]}}</td>
+                <td>{{sel[6]}}</td>
+                <td>{{sel[7]}}</td>
+                <td>{{sel[8]}}</td>
+                <td>{{sel.Selections.First}}</td>
+                <td>{{sel.Selections.Second}}</td>
+                <td>{{sel.Selections.Third}}</td>
+                <td>{{sel.Selections.Fourth}}</td>
+                <td>{{s.SubmittedAt}}</td>
               </tr>
               {%endfor%}
             </tbody>
