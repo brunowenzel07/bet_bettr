@@ -102,7 +102,7 @@ for row in csv_file2:
 		# pprint.pprint(value)
 		if key or value == '':
 			pass
-		if key == "RACEDATE|RACECODE|RACENUMBER" and value != '':
+		if key == "RACEDATE|RACECODE|RACENUMBER" and value != '' and value != 'NONE':
 			# print key, value
 			m = re.match(r"^(?P<racedate>\d+)(?P<racecoursecode>HV|ST)(?P<racenumber>\d+)", value)
 			racedate_ = datetime.strptime(m.group("racedate"), "%Y%m%d")
@@ -112,9 +112,8 @@ for row in csv_file2:
 			races["RaceDate"] = racedate_
 			races["RaceCourseCode"] = racecoursecode_
 			races["RaceNumber"] = racenumber_
+
 			# selections["RaceID"] = get_or_create(db.session,Race, **races_).ID
-			###GET
-		selections["RaceID"] =  get_id(db.session,Race, **races)
 			# selections["RaceID"] = db.session.query(Race.ID).filter_by(RaceDate = racedate_, RaceCourseCode= racecoursecode_, RaceNumber= racenumber_).first().ID
  		if key in user_names and value != '':
  			# pprint.pprint(key)
@@ -122,9 +121,6 @@ for row in csv_file2:
 			# userid_ = db.session.query(User.ID).filter_by(Name = key).first()
 			userid_ = get_id(db.session,User, **users)
 			selections["UserID"] = userid_
-			# selections["tipster"] = key
-			# selections["tips"] = value
-			#preprocess value
 			value = value.replace(' ', '').replace('+', '')
 			tips_ = value.split('-')
 			selections['First'] = int(tips_[0])
@@ -133,6 +129,10 @@ for row in csv_file2:
 			selections['Fourth'] = int(tips_[3]) if len(tips_) ==4 and tips_[3] != '' else None
 			selections["SubmittedAt"] = now
 		pprint.pprint(selections)
+		## should: get THIS RACE STATS NOT all race stats
+		selections["RaceID"] =  get_id(db.session,Race, RaceDate=racedate_, RaceCourseCode=racecoursecode_, RaceNumber=racenumber_)
+		
+
 		if len(selections) >2:
 			s = get_or_create(db.session,Selection, **selections)
 		# pprint.pprint(races)

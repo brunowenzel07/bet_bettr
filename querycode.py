@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.expression import ClauseElement
- 
+import pprint 
 def get_or_create_two(session, model, defaults=None, **kwargs):
     try:
         query = session.query(model).filter_by(**kwargs)

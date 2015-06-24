@@ -242,7 +242,9 @@ class UserPerformance(db.Model):
 
 
 #ODDS
-#THESE 2 TABLES SHOULD EXIST ALREADY - reflect
+#THESE 2 TABLES SHOULD EXIST ALREADY - reflect?
+##if reflect then:
+
 
 class HKOddsModel(db.Model):
     __tablename__ = "hk_odds"
