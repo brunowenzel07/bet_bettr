@@ -17,8 +17,6 @@ from models import *
 babel = Babel(app)
 mail = Mail(app)
 
-db.create_all()
-
 try:
     db.drop_all()
     db.create_all()
