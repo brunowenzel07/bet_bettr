@@ -319,3 +319,35 @@ class HKOddsDisplayModel(db.Model):
         self.WinNowOPDiff = WinNowOPDiff
         self.WinNow5minsDiff = WinNow5minsDiff
         self.WinNowBettingLine = WinNowBettingLine
+
+class Tipster(db.Model):
+    __tablename__ = "TipsterPerformance"
+    ID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(40))
+    TipsterScore = db.Column(db.Float) 
+    NumberWinners = db.Column(db.Integer)
+    Seconds = db.Column(db.Integer)
+    Thirds = db.Column(db.Integer)
+    Fourths = db.Column(db.Integer)
+    TotalRaces = db.Column(db.Integer)
+    WinStrikeRate = db.Column(db.Float)
+    NumberFavorites = db.Column(db.Integer)
+    PerformanceSequence = db.Column(db.TEXT())
+    MaxLosingStreak = db.Column(db.Integer)
+    MinWinningStreak = db.Column(db.Integer)
+    Last10 = db.Column(db.String(40))
+
+    def __init__(Name, TipsterScore, NumberWinners, Seconds, Thirds, Fourths, TotalRaces, WinStrikeRate, NumberFavorites,
+        PerformanceSequence, MaxLosingStreak, MinWinningStreak, Last10):
+        self.TipsterScore = TipsterScore
+        self.NumberWinners = NumberWinners
+        self.Seconds = Seconds
+        self.Thirds = Thirds
+        self.Fourths = Fourths
+        self.TotalRaces = TotalRaces
+        self.WinStrikeRate = WinStrikeRate
+        self.NumberFavorites = NumberFavorites
+        self.PerformanceSequence = PerformanceSequence
+        self.MaxLosingStreak = MaxLosingStreak
+        self.MinWinningStreak = MinWinningStreak
+        self.Last10 = Last10
