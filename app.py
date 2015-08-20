@@ -10,8 +10,8 @@ from werkzeug import generate_password_hash, check_password_hash
 
 ### SQL ALCHEMY CONNECTION ## 
 app = Flask(__name__)
-# app.config.from_pyfile('app.cfg')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
+app.config.from_pyfile('app.cfg')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///demo.sql' #os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 from models import *
 babel = Babel(app)
