@@ -137,7 +137,7 @@ def signup():
     if request.method == 'POST':
         try:
             #add the user to database
-            newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01))
+            newUser = User(request.form['inputEmail'], generate_password_hash(request.form['inputPassword']), request.form['inputName'], datetime(2001,01,01), "")
             db.session.add(newUser)
             db.session.commit()
 
