@@ -13,7 +13,7 @@ from app import db
 #         self.Name = Name
 
 class User(db.Model):
-    __tablename__ = "user"
+    __tablename__ = "User"
     ID = db.Column(db.Integer, primary_key=True)
     Email = db.Column(db.String(120))
     Password = db.Column(db.String(120))
