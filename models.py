@@ -337,8 +337,9 @@ class Tipster(db.Model):
     MinWinningStreak = db.Column(db.Integer)
     Last10 = db.Column(db.String(40))
 
-    def __init__(Name, TipsterScore, NumberWinners, Seconds, Thirds, Fourths, TotalRaces, WinStrikeRate, NumberFavorites,
+    def __init__(self, Name, TipsterScore, NumberWinners, Seconds, Thirds, Fourths, TotalRaces, WinStrikeRate, NumberFavorites,
         PerformanceSequence, MaxLosingStreak, MinWinningStreak, Last10):
+        self.Name = Name
         self.TipsterScore = TipsterScore
         self.NumberWinners = NumberWinners
         self.Seconds = Seconds
@@ -351,3 +352,4 @@ class Tipster(db.Model):
         self.MaxLosingStreak = MaxLosingStreak
         self.MinWinningStreak = MinWinningStreak
         self.Last10 = Last10
+        
