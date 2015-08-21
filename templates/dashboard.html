@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -37,14 +36,45 @@
         <h3 class="text-muted">Bettr</h3>
       </div>
 
-      <div class="jumbotron">
-        <h1>Welcome {{user.Name}}</h1>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <div class="wrapper">
+        <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Tipster Score</th>
+            <th># of Win</th>
+            <th># of 2nd</th>
+            <th># of 3rd</th>
+            <th># of 4th</th>
+            <th>Total Races</th>
+            <th>WinStrike %</th>
+            <th># of Favs</th>
+            <th>Performance Sequence</th>
+            <th>Max Losing Streak</th>
+            <th>Min Winning Streak</th>
+            <th>Last 10</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tipster in tipsters %}
+          <tr>
+            <td>tipster.Name</td>
+            <td>tipster.TipsterScore</td>
+            <td>tipster.NumberWinners</td>
+            <td>tipster.Seconds</td>
+            <td>tipster.Thirds</td>
+            <td>tipster.Fourths</td>
+            <td>tipster.TotalRaces</td>
+            <td>tipster.WinStrikeRate</td>
+            <td>tipster.NumberFavorites</td>
+            <td>tipster.PerformanceSequence</td>
+            <td>tipster.MaxLosingStreak</td>
+            <td>tipster.MinWinningStreak</td>
+            <td>tipster.Last10</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
       </div>
 
       <footer class="footer">
@@ -54,4 +84,11 @@
     </div> <!-- /container -->
 
   </body>
+  <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="//cdn.datatables.net/1.10.8/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $('#tipstersTable').DataTable();
+  });
+  </script>
 </html>
