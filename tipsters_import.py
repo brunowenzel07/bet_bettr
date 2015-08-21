@@ -14,7 +14,7 @@ with open('tipsters.csv', 'rb') as csvfile:
     tipsters = csv.reader(csvfile, delimiter=",", quotechar="'")
     for tipster in tipsters:
     	newTipster = Tipster(tipster[0], tipster[1], tipster[2], tipster[3], tipster[4], tipster[5], tipster[6],
-    		 tipster[7], tipster[8], tipster[10], tipster[11], tipster[12], tipster[13])
+    		 tipster[7], tipster[9], tipster[10], tipster[11], tipster[12], tipster[13])
     	db.session.add(newTipster)
     	print "added tipster ", tipster[0]
     db.session.commit()
