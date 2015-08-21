@@ -17,11 +17,11 @@ from models import *
 babel = Babel(app)
 mail = Mail(app)
 
-try:
-    db.drop_all()
-    db.create_all()
-except Exception, e:
-    print str(e)
+#try:
+#    db.drop_all()
+#    db.create_all()
+#except Exception, e:
+#    print str(e)
 
 @app.route('/')
 def index():
