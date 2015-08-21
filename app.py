@@ -28,7 +28,8 @@ def index():
     if 'username' in session:
         try:
             user = User.query.filter_by(Email=session['username']).first()
-            return render_template('dashboard.html', user=user)
+            tipsters = Tipster.query.order_by(Tipster.WinStrikeRate.desc()).all()
+            return render_template('dashboard.html', user=user, tipsters=tipsters)
         except:
             return redirect('/logout')
     else:
