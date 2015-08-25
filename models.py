@@ -2,6 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint,ForeignKey, UniqueConstraint, CheckConstraint, Column
 from sqlalchemy.types import Float, Unicode, BigInteger, Integer, Boolean, Date, DateTime, Unicode, DECIMAL, String
 from sqlalchemy.orm import relationship, backref
+import pandas as pd
+from datetime import datetime
+
+
 from app import db
 
 # class Country(db.Model):
@@ -12,6 +16,9 @@ from app import db
 #     def __init__(self, Name):
 #         self.Name = Name
 
+
+#### GENERAL CLASSES FOR WEB APP
+
 class User(db.Model):
     __tablename__ = "User"
     ID = db.Column(db.Integer, primary_key=True)
@@ -20,7 +27,7 @@ class User(db.Model):
     Name = db.Column(db.String(60))
     Animal = db.Column(db.String(60))
     DateSignedUp = db.Column(db.TIMESTAMP())
-    performances = relationship("UserPerformance")
+
     __table_args__ = (UniqueConstraint('Name', 'Animal'),)
 
     def __init__(self, Email, Password, Name, DateSignedUp, Animal):
@@ -80,6 +87,7 @@ class Selection(db.Model):
         self.Fourth = Fourth
         self.SubmittedAt = SubmittedAt
 
+### CONVERT TO r TABLES
 
 class RaceDay(db.Model):
     __tablename__ = "RaceDay"
@@ -117,7 +125,7 @@ class Runner(db.Model):
 class Race(db.Model):
     __tablename__ = "Race"
     ID = db.Column(db.Integer, primary_key=True)
-    RaceDate = db.Column(db.TIMESTAMP())
+    RaceDate = db.Column(db.DATE)
     RaceCourseCode = db.Column(db.String(2))
     RaceName = db.Column(db.String(150))
     RaceDayID = db.Column(db.Integer, ForeignKey('RaceDay.ID'))
@@ -201,50 +209,227 @@ class Naps(db.Model):
 
 #SELECTIONGGREGATES
 #user:user_performances 1:M performance updated after each meeting
-class UserPerformance(db.Model):
-    __tablename__ = "UserPerformance"
-    ID = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False) # Unique ID
-    RaceDate = db.Column(Date, nullable=False)
-    UserID = db.Column(db.Integer, ForeignKey('User.ID'))
-    Winpc = db.Column(Float, nullable=False)
-    Wins = db.Column(Integer)
-    TotalWinOdds = db.Column(Float)
-    Losses = db.Column(Integer)
-    NonRunners = db.Column(Integer)
-    MaxSeqWin = db.Column(Integer)
-    MaxSeqLose = db.Column(Integer)
-    PresSeqWin = db.Column(Integer)
-    PresSeqLose = db.Column(Integer)
-    MonthRoi = db.Column(Float)
-    SeasonRoi = db.Column(Float)
-    SeasonWins = db.Column(Integer)
-    SeasonLosses = db.Column(Integer)
-    NapsWins = db.Column(Integer)
-    NapsLosses = db.Column(Integer)
-    NapsWinpc = db.Column(Float)
-    NapsMaxSeqWin = db.Column(Integer)
-    NapsMaxSeqLose = db.Column(Integer)
-    NapsPresSeqWin = db.Column(Integer)
-    NapsPresSeqLose = db.Column(Integer)
-    AvgWinOdds = db.Column(Float, nullable=False)
-    Kelly_L200 = db.Column(Float)
-    Kelly_Season = db.Column(Float)
-    Placepc = db.Column(Float, nullable=False)
-    Tiercepc = db.Column(Float)
-    AvgTierceOdds = db.Column(Float)
-    Triopc = db.Column(Float)
-    AvgTrioOdds = db.Column(Float)
-    F4pc = db.Column(Float)
-    QTTpc = db.Column(Float)
-    AvgF4Odds = db.Column(Float)
+
+
+##ADD DUMP TABLE FOR CSV IMPORT used to update tupster data as season progresses
+
+
+##ADD DATE so that LATEST TIPSTER DATA CAN BE DISPLAYED 
+# class UserPerformance(db.Model):
+#     __tablename__ = "UserPerformance"
+#     ID = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False) # Unique ID
+#     RaceDate = db.Column(Date, nullable=False)
+#     UserID = db.Column(db.Integer, ForeignKey('User.ID'))
+#     Winpc = db.Column(Float, nullable=False)
+#     Wins = db.Column(Integer)
+#     TotalWinOdds = db.Column(Float)
+#     Losses = db.Column(Integer)
+#     NonRunners = db.Column(Integer)
+#     MaxSeqWin = db.Column(Integer)
+#     MaxSeqLose = db.Column(Integer)
+#     PresSeqWin = db.Column(Integer)
+#     PresSeqLose = db.Column(Integer)
+#     MonthRoi = db.Column(Float)
+#     SeasonRoi = db.Column(Float)
+#     SeasonWins = db.Column(Integer)
+#     SeasonLosses = db.Column(Integer)
+#     NapsWins = db.Column(Integer)
+#     NapsLosses = db.Column(Integer)
+#     NapsWinpc = db.Column(Float)
+#     NapsMaxSeqWin = db.Column(Integer)
+#     NapsMaxSeqLose = db.Column(Integer)
+#     NapsPresSeqWin = db.Column(Integer)
+#     NapsPresSeqLose = db.Column(Integer)
+#     AvgWinOdds = db.Column(Float, nullable=False)
+#     Kelly_L200 = db.Column(Float)
+#     Kelly_Season = db.Column(Float)
+#     Placepc = db.Column(Float, nullable=False)
+#     Tiercepc = db.Column(Float)
+#     AvgTierceOdds = db.Column(Float)
+#     Triopc = db.Column(Float)
+#     AvgTrioOdds = db.Column(Float)
+#     F4pc = db.Column(Float)
+#     QTTpc = db.Column(Float)
+#     AvgF4Odds = db.Column(Float)
 
     #INIT
 
 
 #ODDS
 #THESE 2 TABLES SHOULD EXIST ALREADY - reflect?
-##if reflect then:
 
+
+################################# t TABLES ##############################################################
+
+'''
+All users are also potentially systems - owner_id USER
+The systems have names of animals
+Users have regular email, name, ...
+A system can also stand alone in which case its userid is Metabet
+some systems are not users with emails, password
+but users can subscribe to systems 
+
+'''
+
+class t_System(db.Model):
+    __tablename__ = "t_system"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60))
+    animal = db.Column(db.String(60))
+    datestarted = db.Column(db.Date)
+    datestopped = db.Column(db.Date)
+    performances = relationship("t_SystemPerformance") ##I have seen that error before if I forget that ForeignKey() takes the name of a database table-and-field but that relationship() takes the name of an ORM class instead.
+    __table_args__ = (UniqueConstraint('name', 'animal'),)
+
+    def __init__(self, name, animal, datestarted, datestopped):
+        self.name = name
+        self.animal = animal
+        self.datestarted = datestarted
+        self.datestopped = datestopped
+
+
+'''
+Metadata for race useful for tipsters
+use racedate, racecourse racenumber to JOIN to data coming from ODDS (racedate, racecoursecode, racenumber) and r_race = raceresults
+and rd_race raceday
+'''
+
+class t_Race(db.Model):
+    __tablename__  ="t_race"
+    id = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False) # Unique ID
+    racedate = db.Column(db.Date)
+    racecoursecode = db.Column(db.String(2))
+    racenumber = db.Column(db.Integer)
+    result = db.Column(db.String(40))
+    winodds = db.Column(db.Float)
+    favpos = db.Column(db.Integer)
+    norunners = db.Column(db.Integer)
+    marketorder = db.Column(db.String(40))
+    surface= db.Column(db.String(10))
+    raceclass= db.Column(db.String(6))
+    f4 = db.Column(db.Float)
+    tierce= db.Column(db.Float)
+    qtt = db.Column(db.Float)
+    dt = db.Column(db.Float)
+    tt = db.Column(db.Float)
+    ttc = db.Column(db.Float)
+    sixup = db.Column(db.Float)
+    sixupc = db.Column(db.Float)
+    __table_args__ = (UniqueConstraint('racedate', 'racecoursecode', 'racenumber'),)
+
+    def __init__(self, racedate, racecoursecode, racenumber, results, winodds, favpos, norunners, marketorder, surface, raceclass,\
+    f4, tierce, qtt, dt, tt, ttc, sixup, sixupc ):
+        self.racedate = racedate
+        self.racecoursecode = racecoursecode
+        self.racenumber = racenumber
+        self.results= results
+        self.winodds = winodds
+        self.favpos= favpos
+        self.norunners = norunners
+        self.marketorder = marketorder
+        self.surface = surface 
+        self.raceclass = raceclass
+        self.f4 = f4
+        self.tierce = tierce
+        self.qtt = qtt
+        self.dt = dt
+        self.tt  = tt
+        self.ttc = ttc
+        self.sixup = sixup
+        self.sixupc = sixupc
+'''
+Measures cross performance based on perf_seq for 2 or more systems  
+the combination is a string code SYSTEM1ID|SYSTEM2ID| (SYSTEM3ID) 
+add other metrics to this table later
+'''
+class t_SystemCrossPerformance(db.Model):
+    __tablename__ = "t_systemcrossperformance"
+    id = db.Column(db.Integer, primary_key=True)
+    combination =db.Column(db.String(40))
+    similarity= db.Column(db.Float)
+    updated = db.Column(db.TIMESTAMP)
+    updated_date = db.Column(db.Date)
+
+    def __init__(self, combination, similarity, updated= datetime.utcnow()):
+        self.combination = combination
+        self.similarity = twowaysimilarity
+        self.updated = updated
+        self.updated_date = updated.date()
+
+'''
+Contains aggregate data for tipsters based on the updated/_date.
+Thus can be updated at any time pre post race 
+select latest always
+'''
+class t_SystemPerformance(db.Model):
+    __tablename__ = "t_systemperformance"
+    id = db.Column(db.Integer, primary_key=True)
+    t_system_id= db.Column(db.Integer, ForeignKey('t_system.id'))
+    tipsterscore = db.Column(db.Float) 
+    winners = db.Column(db.Integer)
+    seconds = db.Column(db.Integer)
+    thirds = db.Column(db.Integer)
+    fourths = db.Column(db.Integer)
+    totalraces = db.Column(db.Integer)
+    winsr = db.Column(db.Float)
+    favorites = db.Column(db.Integer)
+    perf_seq = db.Column(db.TEXT())
+    maxlosingstreak = db.Column(db.Integer)
+    maxwinningstreak = db.Column(db.Integer)
+    last10 = db.Column(db.String(40))
+    updated = db.Column(db.TIMESTAMP)
+    updated_date = db.Column(db.Date)
+
+    def __init__(self, t_system_id, tipsterscore, winners, seconds, thirds, fourths, totalraces, winsr, favorites,
+        perf_seq, maxlosingstreak, maxwinningstreak, last10, updated=datetime.utcnow()):
+        self.t_system_id = t_system_id
+        self.tipsterscore = tipsterscore
+        self.winners = winners
+        self.seconds = seconds
+        self.thirds = thirds
+        self.fourths = fourths
+        self.totalraces = totalraces
+        self.winsr = winsr
+        self.favorites = favorites
+        self.perf_seq = perf_seq
+        self.maxlosingstreak = maxlosingstreak
+        self.maxwinningstreak = maxwinningstreak
+        self.last10 = last10
+        self.updated = updated
+        self.updated_date = updated.date()
+
+'''
+Contains the raw tips per tipster (system)
+for system non tipsters - calculate from formfactors/jockeys/etc to output 1st-2nd-3rd-4th string and update
+can only tip once per race
+'''
+class t_SystemRecords(db.Model):
+    __tablename__ = "t_systemrecords"
+    id = Column(BigInteger, primary_key = True, autoincrement = True, nullable = False) # Unique ID
+    t_race_id = db.Column(db.Integer, ForeignKey('t_race.id'))
+    t_system_id= db.Column(db.Integer, ForeignKey('t_system.id'))
+    first = db.Column(db.Integer)
+    second = db.Column(db.Integer)
+    third = db.Column(db.Integer)
+    fourth = db.Column(db.Integer)
+    updated = db.Column(db.TIMESTAMP)
+    updated_date = db.Column(db.Date)
+    __table_args__ = (UniqueConstraint('t_race_id', 't_system_id'),)
+
+    def __init__(self,t_race_id, t_system_id, first, second, third, fourth, updated=datetime.utcnow()):
+        self.t_race_id= t_race_id
+        self.t_system_id=t_system_id
+        self.first = first
+        self.second = second
+        self.third = third
+        self.fourth = fourth
+        self.updated = updated
+        self.updated_date = updated.date()
+
+#################################################################################################################
+
+
+### convert to o_ redo oddsmodel
 
 class HKOddsModel(db.Model):
     __tablename__ = "hk_odds"
@@ -276,6 +461,8 @@ class HKOddsModel(db.Model):
         self.is_reserve = is_reserve
         self.is_scratched = is_scratched
 
+
+##Create table For Aggregate Data (waiting for results to do analysis) - do CSV to remote database
 
 ##ODDS
 class HKOddsDisplayModel(db.Model):
@@ -320,6 +507,7 @@ class HKOddsDisplayModel(db.Model):
         self.WinNow5minsDiff = WinNow5minsDiff
         self.WinNowBettingLine = WinNowBettingLine
 
+## ADD VALIDASOF DATE HERE and DISPLAYED BASED ON FILTERED BY THIS DATE
 class Tipster(db.Model):
     __tablename__ = "TipsterPerformance"
     ID = db.Column(db.Integer, primary_key=True)

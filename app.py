@@ -80,7 +80,7 @@ def racedaycourse():
 
             #get the selections user already made
             selections = {}
-            sels = Selections.query.filter_by(Userid=user.ID).all()
+            sels = Selection.query.filter_by(Userid=user.ID).all()
             for s in sels:
                 selections[s.Racecourseid] = [s.First, s.Second, s.Third, s.Fourth]
             return render_template('racedaycourse.html', user = user, races = races, selections=selections,current_date=racedate_max.strftime("%m/%d/%Y"))
