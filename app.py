@@ -59,7 +59,7 @@ def show():
         try:
             user = User.query.filter_by(Email=session['username']).first()
             racecourse = Racecourses.query.subquery()
-            selections = db.session.query(Selections, racecourse.c.RaceDate, racecourse.c.RaceCourseCode, racecourse.c.RaceNumber, racecourse.c.Result, racecourse.c.WinOdds, racecourse.c.FavPos, racecourse.c.FavOdds, racecourse.c.NoRunners).filter(Selections.Userid==user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
+            selections = db.session.query(Selection, racecourse.c.RaceDate, racecourse.c.RaceCourseCode, racecourse.c.RaceNumber, racecourse.c.Result, racecourse.c.WinOdds, racecourse.c.FavPos, racecourse.c.FavOdds, racecourse.c.NoRunners).filter(Selection.UserID==user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
             return render_template('show.html', user=user, selections = selections)
         except:
             return redirect('/logout')
@@ -80,7 +80,7 @@ def racedaycourse():
 
             #get the selections user already made
             selections = {}
-            sels = Selection.query.filter_by(Userid=user.ID).all()
+            sels = Selection.query.filter_by(UserID=user.ID).all()
             for s in sels:
                 selections[s.Racecourseid] = [s.First, s.Second, s.Third, s.Fourth]
             return render_template('racedaycourse.html', user = user, races = races, selections=selections,current_date=racedate_max.strftime("%m/%d/%Y"))
@@ -114,7 +114,7 @@ def updateselection():
                 fourth = 0
 
             #check is there a selection for this user and this racecourse code already made, if so remove it
-            oldSelection = Selections.query.filter_by(Userid=user.ID,Racecourseid=race.RaceCourseCode).first()
+            oldSelection = Selections.query.filter_by(UserID=user.ID,Racecourseid=race.RaceCourseCode).first()
             if oldSelection:
                 db.session.delete(oldSelection)
                 db.session.commit()

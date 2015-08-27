@@ -1,5 +1,6 @@
 # Virtualenv
 env
+.env
 .Python
 include
 lib
@@ -31,3 +32,11 @@ races.csv
 
 # Ins
 gist.txt
+
+# OSX
+.DS_Store
+
+# IDE
+.idea
+.vagrant
+Vagrantfile

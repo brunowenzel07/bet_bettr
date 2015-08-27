@@ -51,13 +51,13 @@ class User(db.Model):
 #         self.DateStart = DateStart
 #         self.Active = Active
 
-# class Racecourses(db.Model):
-#     __tablename__ = "Racecourses"
-#     ID = db.Column(db.Integer, primary_key=True)
-#     Name = db.Column(db.String(60), unique=True)
+class Racecourses(db.Model):
+    __tablename__ = "Racecourses"
+    ID = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String(60), unique=True)
 
-#     def __init__(self, Name):
-#         self.Name = Name
+    def __init__(self, Name):
+        self.Name = Name
 
 #separate class for Napoleon based on RaceDay
 
