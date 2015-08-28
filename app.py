@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import hashlib
+from sqlalchemy import inspect
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort, session
 from flask_mail import Mail, Message
@@ -53,15 +54,49 @@ def login():
             return render_template('login.html', message=gettext('Please try again!'))
     return render_template('login.html')
 
+# @app.route('/show')
+# def show():
+#     if 'username' in session:
+#         try:
+#             user = User.query.filter_by(Email=session['username']).first()
+#             racecourse = Racecourses.query.subquery()
+#             selections = db.session.query(Selection, racecourse.c.RaceDate, racecourse.c.RaceCourseCode, racecourse.c.RaceNumber, racecourse.c.Result, racecourse.c.WinOdds, racecourse.c.FavPos, racecourse.c.FavOdds, racecourse.c.NoRunners).filter(Selection.UserID==user.ID).outerjoin(racecourse, Selection.Racecourseid == racecourse.c.ID)
+#             return render_template('show.html', user=user, selections = selections)
+#         except Exception, e:
+#             print "Exception %s" % str(e)
+#             return redirect('/logout')
+#     else:
+#         return render_template('index.html')
+
 @app.route('/show')
 def show():
     if 'username' in session:
         try:
             user = User.query.filter_by(Email=session['username']).first()
-            racecourse = Racecourses.query.subquery()
-            selections = db.session.query(Selection, racecourse.c.RaceDate, racecourse.c.RaceCourseCode, racecourse.c.RaceNumber, racecourse.c.Result, racecourse.c.WinOdds, racecourse.c.FavPos, racecourse.c.FavOdds, racecourse.c.NoRunners).filter(Selection.UserID==user.ID).outerjoin(racecourse, Selections.Racecourseid == racecourse.c.ID)
-            return render_template('show.html', user=user, selections = selections)
-        except:
+            mapper = inspect(t_SystemPerformance)
+
+            tsp_exclude = ['updated_date', 'perf_seq']
+            tsp_attrs = map(lambda x: x.class_attribute, filter(lambda x: x.key not in tsp_exclude, list(mapper.attrs)))
+
+            ts_attrs = [t_System.animal]
+
+            attrs = tsp_attrs + ts_attrs
+            attrs_names = map(lambda x: x.key, attrs)
+
+            table1 = db.session.query(t_System, *attrs).join(t_System.performances)
+            # first item is the models instance
+            table1 = map(lambda x: x[1:], table1)
+            table1 = (attrs_names, table1)
+
+            table2 = db.session.query(t_System, t_System.animal, t_SystemPerformance.perf_seq).join(t_System.performances)
+            # first item is the models instance
+            table2 = map(lambda x: x[1:], table2)
+
+            table2 = (['animal', 'perf_seq'], table2)
+
+            return render_template('show.html', user=user, table1=table1, table2=table2)
+        except Exception, e:
+            print "Exception %s" % str(e)
             return redirect('/logout')
     else:
         return render_template('index.html')

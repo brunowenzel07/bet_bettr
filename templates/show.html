@@ -15,41 +15,43 @@
 
         <h1>Welcome {{ user.Name }}</h1>
 
-        <div class="container-fluid">
-            <div class="row">
-                <table class="table table-striped">
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-striped" data-sort="table">
                     <thead>
-                    <td>Race Date</td>
-                    <td>Racecourse Code</td>
-                    <td>Race Number</td>
-                    <td>Result</td>
-                    <td>Race Number</td>
-                    <td>Win Odds</td>
-                    <td>Favorite Position</td>
-                    <td>Favorite Odds</td>
-                    <td># of Runners</td>
-                    <td>Selection 1st</td>
-                    <td>Selection 2nd</td>
-                    <td>Selection 3rd</td>
-                    <td>Selection 4th</td>
-                    <td>Submitted at</td>
+                    {% for field_name in table1[0] %}
+                        <th>{{ field_name }}</th>
+                    {% endfor %}
+
                     </thead>
                     <tbody>
-                    {% for sel in selections %}
+                    {% for row in table1[1] %}
                         <tr>
-                            <td>{{ sel[1] }}.strftime('%d %B, %Y')}}</td>
-                            <td>{{ sel[2] }}</td>
-                            <td>{{ sel[3] }}</td>
-                            <td>{{ sel[4] }}</td>
-                            <td>{{ sel[5] }}</td>
-                            <td>{{ sel[6] }}</td>
-                            <td>{{ sel[7] }}</td>
-                            <td>{{ sel[8] }}</td>
-                            <td>{{ sel.Selections.First }}</td>
-                            <td>{{ sel.Selections.Second }}</td>
-                            <td>{{ sel.Selections.Third }}</td>
-                            <td>{{ sel.Selections.Fourth }}</td>
-                            <td>{{ s.SubmittedAt }}</td>
+                          {% for field in row %}
+                              <td>{{ field }}</td>
+                          {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-striped" data-sort="table">
+                    <thead>
+                    {% for field_name in table2[0] %}
+                        <th>{{ field_name }}</th>
+                    {% endfor %}
+
+                    </thead>
+                    <tbody>
+                    {% for row in table2[1] %}
+                        <tr>
+                          {% for field in row %}
+                              <td>{{ field }}</td>
+                          {% endfor %}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -62,5 +64,12 @@
         </footer>
 
     </div> <!-- /container -->
-
+{% endblock %}
+{% block javascript_extra %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // call the tablesorter plugin
+            $("[data-sort=table]").tablesorter();
+        });
+    </script>
 {% endblock %}
