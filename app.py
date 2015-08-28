@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import hashlib
-from sqlalchemy import inspect
+from sqlalchemy import inspect, desc
 from flask import Flask, request, flash, url_for, redirect, \
      render_template, abort, session
 from flask_mail import Mail, Message
@@ -83,12 +83,14 @@ def show():
             attrs = tsp_attrs + ts_attrs
             attrs_names = map(lambda x: x.key, attrs)
 
-            table1 = db.session.query(t_System, *attrs).join(t_System.performances)
+            table1 = db.session.query(t_System, *attrs).join(t_System.performances).order_by(
+                desc(t_SystemPerformance.updated))
             # first item is the models instance
             table1 = map(lambda x: x[1:], table1)
             table1 = (attrs_names, table1)
 
-            table2 = db.session.query(t_System, t_System.animal, t_SystemPerformance.perf_seq).join(t_System.performances)
+            table2 = db.session.query(t_System, t_System.animal, t_SystemPerformance.perf_seq).join(
+                t_System.performances).order_by(desc(t_SystemPerformance.updated))
             # first item is the models instance
             table2 = map(lambda x: x[1:], table2)
 
