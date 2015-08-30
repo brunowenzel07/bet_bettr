@@ -75,7 +75,7 @@ def show():
             user = User.query.filter_by(Email=session['username']).first()
             mapper = inspect(t_SystemPerformance)
 
-            tsp_exclude = ['id', 'updated_date', 'perf_seq']
+            tsp_exclude = ['id', 't_system_id', 'updated_date', 'perf_seq']
             tsp_attrs = map(lambda x: x.class_attribute, filter(lambda x: x.key not in tsp_exclude, list(mapper.attrs)))
 
             ts_attrs = [t_System.animal]
