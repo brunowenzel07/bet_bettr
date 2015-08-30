@@ -75,12 +75,12 @@ def show():
             user = User.query.filter_by(Email=session['username']).first()
             mapper = inspect(t_SystemPerformance)
 
-            tsp_exclude = ['updated_date', 'perf_seq']
+            tsp_exclude = ['id', 'updated_date', 'perf_seq']
             tsp_attrs = map(lambda x: x.class_attribute, filter(lambda x: x.key not in tsp_exclude, list(mapper.attrs)))
 
             ts_attrs = [t_System.animal]
 
-            attrs = tsp_attrs + ts_attrs
+            attrs = ts_attrs + tsp_attrs
             attrs_names = map(lambda x: x.key, attrs)
 
             table1 = db.session.query(t_System, *attrs).join(t_System.performances).order_by(

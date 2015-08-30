@@ -14,56 +14,53 @@
         </div>
 
         <h1>Welcome {{ user.Name }}</h1>
+    </div>
 
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-striped" data-sort="table">
-                    <thead>
-                    {% for field_name in table1[0] %}
-                        <th>{{ field_name }}</th>
-                    {% endfor %}
+    <div class="wrapper" style="overflow: auto">
+        <table class="table table-striped table-condensed" data-sort="table">
+            <thead>
+            {% for field_name in table1[0] %}
+                <th>{{ field_name }}</th>
+            {% endfor %}
 
-                    </thead>
-                    <tbody>
-                    {% for row in table1[1] %}
-                        <tr>
-                          {% for field in row %}
-                              <td>{{ field }}</td>
-                          {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            </thead>
+            <tbody>
+            {% for row in table1[1] %}
+                <tr>
+                  {% for field in row %}
+                      <td>{{ field }}</td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-striped" data-sort="table">
-                    <thead>
-                    {% for field_name in table2[0] %}
-                        <th>{{ field_name }}</th>
-                    {% endfor %}
+    <div class="wrapper" style="overflow: auto">
+        <table class="table table-striped table-condensed" data-sort="table">
+            <thead>
+            {% for field_name in table2[0] %}
+                <th>{{ field_name }}</th>
+            {% endfor %}
 
-                    </thead>
-                    <tbody>
-                    {% for row in table2[1] %}
-                        <tr>
-                          {% for field in row %}
-                              <td>{{ field }}</td>
-                          {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            </thead>
+            <tbody>
+            {% for row in table2[1] %}
+                <tr>
+                  {% for field in row %}
+                      <td>{{ field }}</td>
+                  {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <footer class="footer">
-            <p>&copy; Company 2015</p>
-        </footer>
+    <footer class="footer">
+        <p>&copy; Company 2015</p>
+    </footer>
 
-    </div> <!-- /container -->
+  </div> <!-- /container -->
 {% endblock %}
 {% block javascript_extra %}
     <script type="text/javascript">
